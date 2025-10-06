@@ -1,0 +1,21 @@
+{
+  "name": "express-postgresql-template",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "WitherMite",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "populate-db": "node ./db/populate.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {}
+}

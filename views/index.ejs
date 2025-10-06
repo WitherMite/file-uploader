@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Express + PostgreSQL app</title>
+  </head>
+  <body>
+    <h1>Express is working!</h1>
+    <p>
+      If there is a list of items, the app is successfully connected to a
+      database!
+    </p>
+    <ul>
+      <% values.forEach((v) => { %>
+      <li><%= v.value%></li>
+      <%});%>
+    </ul>
+  </body>
+</html>
