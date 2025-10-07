@@ -1,0 +1,19 @@
+<form action="/login" method="post">
+  <div class="form-control">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required />
+  </div>
+
+  <div class="form-control">
+    <label for="pass">Password:</label>
+    <input type="password" id="pass" name="password" required />
+  </div>
+
+  <% if (locals.wasFailure) { %>
+  <div class="form-errors">
+    <p class="error">Username or password was incorrect.</p>
+  </div>
+  <% } %>
+
+  <button type="submit">Log in</button>
+</form>

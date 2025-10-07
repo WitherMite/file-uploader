@@ -1,0 +1,43 @@
+const { PrismaClient } = require("../generated/prisma");
+const LocalStrategy = require("passport-local").Strategy;
+const passport = require("passport");
+const bcrypt = require("bcryptjs");
+const prisma = new PrismaClient();
+
+passport.use(
+  new LocalStrategy(async (username, password, callback) => {
+    try {
+      const user = await prisma.user.findUnique({ where: { username } });
+
+      if (!user) {
+        return callback(null, false, { message: "Incorrect username." });
+      }
+
+      const matches = await bcrypt.compare(password, user.password);
+
+      if (!matches) {
+        return callback(null, false, { message: "Incorrect password." });
+      }
+
+      return callback(null, user);
+    } catch (e) {
+      return callback(e);
+    }
+  })
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id } });
+
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});
+
+module.exports = passport;
