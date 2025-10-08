@@ -10,6 +10,7 @@ const { PrismaClient } = require("./generated/prisma");
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 app.use(
   expressSession({
     secret: process.env.SECRET,

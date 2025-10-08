@@ -6,9 +6,27 @@
     <title>File Uploader</title>
   </head>
   <body>
-    Authenticated!
     <form action="/logout" method="post">
       <button type="submit">logout</button>
     </form>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <div class="form-control">
+        <label for="file">File:</label>
+        <input type="file" name="file" id="file" />
+      </div>
+      <button type="submit">Upload</button>
+    </form>
+    <main>
+      <% files.forEach((file) => { %>
+      <div class="file-card">
+        <h2><%= file.filename %></h2>
+        <p><%= file.size %></p>
+        <p><%= file.createdAt %></p>
+        <% if (file.mimetype.startsWith("image/")) { %>
+        <img src="<%= file.path %>" alt="" />
+        <% } %>
+      </div>
+      <% }); %>
+    </main>
   </body>
 </html>

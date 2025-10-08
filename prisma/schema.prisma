@@ -25,4 +25,16 @@ model user {
     id  Int  @id @default(autoincrement())
     username String @unique
     password String
+    files file[]
+}
+
+model file {
+    id Int @id @default(autoincrement())
+    user user @relation(fields: [userId], references: [id])
+    userId Int
+    filename String @unique
+    path String 
+    size Int
+    mimetype String
+    createdAt DateTime @default(now())
 }
