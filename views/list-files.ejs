@@ -1,0 +1,10 @@
+<% files.forEach((file) => { %>
+<div class="file-card">
+  <h2><%= file.filename %></h2>
+  <p><%= file.size %> bytes</p>
+  <p>Uploaded: <%= file.createdAt %></p>
+  <% if (file.mimetype.startsWith("image/")) { %>
+  <img src="<%= file.path %>" alt="" />
+  <% } %>
+</div>
+<% }); %>

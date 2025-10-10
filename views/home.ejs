@@ -16,17 +16,6 @@
       </div>
       <button type="submit">Upload</button>
     </form>
-    <main>
-      <% files.forEach((file) => { %>
-      <div class="file-card">
-        <h2><%= file.filename %></h2>
-        <p><%= file.size %></p>
-        <p><%= file.createdAt %></p>
-        <% if (file.mimetype.startsWith("image/")) { %>
-        <img src="<%= file.path %>" alt="" />
-        <% } %>
-      </div>
-      <% }); %>
-    </main>
+    <main><%- include("list-files", {files}); %></main>
   </body>
 </html>

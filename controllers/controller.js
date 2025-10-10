@@ -11,7 +11,7 @@ const upload = multer({ dest: "public/files/" });
 // authentication
 
 exports.loginUser = passportStrategy.authenticate("local", {
-  successRedirect: "/files",
+  successRedirect: "/home",
   failureRedirect: "/",
 });
 
@@ -38,13 +38,13 @@ exports.renderLoginForm = async (req, res) => {
   res.render("login-form");
 };
 
-exports.renderFiles = async (req, res) => {
+exports.renderHomepage = async (req, res) => {
   if (req.isAuthenticated()) {
     const files = await prisma.file.findMany({
       where: { userId: req.user.id },
     });
     console.table(files);
-    return res.render("files", { files });
+    return res.render("home", { files });
   }
   return res.redirect("/");
 };
@@ -71,7 +71,7 @@ exports.createUser = [
       });
       req.login(user, (e) => {
         if (e) return next(e);
-        return res.redirect("/files");
+        return res.redirect("/home");
       });
     } catch (e) {
       console.error(e);
@@ -100,6 +100,6 @@ exports.uploadFile = [
         user: { connect: { id: req.user.id } },
       },
     });
-    res.redirect("/files");
+    res.redirect("/home");
   },
 ];

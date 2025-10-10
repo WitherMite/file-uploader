@@ -3,7 +3,7 @@ const controller = require("../controllers/controller");
 const router = Router();
 
 router.get("/", controller.renderIndex);
-router.get("/files", controller.renderFiles);
+router.get("/home", controller.renderHomepage);
 router.get("/signup", controller.renderSignupForm);
 router.get("/login", controller.renderLoginForm);
 
