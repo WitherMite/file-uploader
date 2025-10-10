@@ -40,9 +40,7 @@ exports.renderLoginForm = async (req, res) => {
 
 exports.renderHomepage = async (req, res) => {
   if (req.isAuthenticated()) {
-    const files = await prisma.file.findMany({
-      where: { userId: req.user.id },
-    });
+    const { files } = req.user;
     console.table(files);
     return res.render("home", { files });
   }
