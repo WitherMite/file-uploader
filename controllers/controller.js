@@ -40,9 +40,9 @@ exports.renderLoginForm = async (req, res) => {
 
 exports.renderHomepage = async (req, res) => {
   if (req.isAuthenticated()) {
-    const { files } = req.user;
+    const { username, folders, files } = req.user;
     console.table(files);
-    return res.render("home", { files });
+    return res.render("home", { username, folders, files });
   }
   return res.redirect("/");
 };
@@ -75,6 +75,17 @@ exports.createUser = [
       console.error(e);
       return next(e);
     }
+  },
+];
+
+exports.createFolder = [
+  async (req, res, next) => {
+    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    const { name } = req.body;
+    await prisma.folder.create({
+      data: { name, user: { connect: { id: req.user.id } } },
+    });
+    res.redirect("/home");
   },
 ];
 

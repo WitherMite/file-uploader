@@ -9,7 +9,10 @@ passport.use(
     try {
       const user = await prisma.user.findUnique({
         where: { username },
-        include: { folders: true, files: { where: { folderId: null } } },
+        include: {
+          folders: { include: { files: true } },
+          files: { where: { folderId: null } },
+        },
       });
 
       if (!user) {
@@ -37,7 +40,10 @@ passport.deserializeUser(async (id, done) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id },
-      include: { folders: true, files: { where: { folderId: null } } },
+      include: {
+        folders: { include: { files: true } },
+        files: { where: { folderId: null } },
+      },
     });
 
     done(null, user);

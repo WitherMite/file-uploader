@@ -1,0 +1,9 @@
+<% folders.forEach((folder) => { %>
+<div class="folder-card">
+  <h2><%= folder.name %></h2>
+  <p>Contains <%= folder.files.length %> files</p>
+  <button>View</button>
+  <button>Add Files</button>
+  <button>Delete</button>
+</div>
+<% }); %>

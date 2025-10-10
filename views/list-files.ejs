@@ -4,7 +4,9 @@
   <p><%= file.size %> bytes</p>
   <p>Uploaded: <%= file.createdAt %></p>
   <% if (file.mimetype.startsWith("image/")) { %>
-  <img src="<%= file.path %>" alt="" />
+  <img src="<%= file.path %>" alt="" class="file-image" />
   <% } %>
+  <button><%= file.folderId ? "Change" : "Add to" %> Folder</button>
+  <button>Delete</button>
 </div>
 <% }); %>

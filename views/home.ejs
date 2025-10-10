@@ -6,16 +6,41 @@
     <title>File Uploader</title>
   </head>
   <body>
-    <form action="/logout" method="post">
-      <button type="submit">logout</button>
-    </form>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-      <div class="form-control">
-        <label for="file">File:</label>
-        <input type="file" name="file" id="file" />
-      </div>
-      <button type="submit">Upload</button>
-    </form>
-    <main><%- include("list-files", {files}); %></main>
+    <header>
+      <h1>Welcome, <%= username %>!</h1>
+      <nav>
+        <form action="/logout" method="post">
+          <button type="submit">logout</button>
+        </form>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+          <h2>Upload File:</h2>
+          <div class="form-control">
+            <label for="file">File:</label>
+            <input type="file" name="file" id="file" />
+          </div>
+          <button type="submit">Upload</button>
+        </form>
+      </nav>
+    </header>
+
+    <main>
+      <section class="folders">
+        <h1>Folders</h1>
+        <form action="/new-folder" method="post">
+          <h2>Create Folder:</h2>
+          <div class="form-control">
+            <label for="folder-name">Name:</label>
+            <input type="text" name="name" id="folder-name" />
+          </div>
+          <button type="submit">Upload</button>
+        </form>
+        <%- include("list-folders", {folders}); %>
+      </section>
+
+      <section class="loose-files">
+        <h1>Loose Files</h1>
+        <%- include("list-files", {files}); %>
+      </section>
+    </main>
   </body>
 </html>
