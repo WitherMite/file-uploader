@@ -112,3 +112,21 @@ exports.uploadFile = [
     res.redirect("/home");
   },
 ];
+
+// TODO: ensure this doesnt try to add a file that has a folder to another with a custom form validation fn
+exports.addFilesToFolder = [
+  async (req, res, next) => {
+    const { folderId, fileIds } = req.body;
+    const connectList = [];
+    [...fileIds].forEach((id) => connectList.push({ id: Number(id) }));
+    await prisma.folder.update({
+      where: { id: Number(folderId) },
+      data: {
+        files: {
+          connect: connectList,
+        },
+      },
+    });
+    res.redirect("/home");
+  },
+];

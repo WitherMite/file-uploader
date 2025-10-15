@@ -1,0 +1,36 @@
+<%#
+<!-- needed locals: buttonText, folderId, dialogId -->
+%> <%#
+<!-- ids must be unique on the page and dialogId must be a valid JS var name -->
+%>
+<button type="button" onclick="open<%= dialogId %>()"><%= buttonText %></button>
+
+<dialog id="<%= dialogId %>">
+  <form action="/folder/add" method="post">
+    <button type="button" onclick="close<%= dialogId %>()">X</button>
+
+    <input type="hidden" name="folderId" value="<%= folderId %>" />
+
+    <div class="form-control">
+      <!-- prettier-ignore -->
+      <label for="<%= dialogId %>Select">Select all files to add to folder</label>
+      <select name="fileIds" id="<%= dialogId %>Select" multiple>
+        <% files.forEach(file => {%>
+        <option value="<%= file.id %>"><%= file.filename %></option>
+        <% }); %>
+      </select>
+    </div>
+
+    <button type="submit">Add Files</button>
+  </form>
+</dialog>
+
+<script>
+  const dialog = document.querySelector("#<%= dialogId %>");
+  const open<%= dialogId %> = () => {
+    dialog.showModal();
+  };
+  const close<%= dialogId %> = () => {
+    dialog.close();
+  };
+</script>

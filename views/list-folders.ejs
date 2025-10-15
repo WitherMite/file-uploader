@@ -3,7 +3,10 @@
   <h2><%= folder.name %></h2>
   <p>Contains <%= folder.files.length %> files</p>
   <button>View</button>
-  <button>Add Files</button>
+  <!-- prettier-ignore -->
+  <% if (files.length > 0) { %>
+  <%- include("add-to-folder-form", { buttonText: "Add Files", folderId: folder.id, dialogId: `folder${folder.id}Dialog` }); %>
+  <% } %>
   <button>Delete</button>
 </div>
 <% }); %>
