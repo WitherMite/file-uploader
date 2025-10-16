@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= folder.name %></title>
+  </head>
+  <body>
+    <main>
+      <h1><%= folder.name %></h1>
+      <!-- prettier-ignore -->
+      <%- include("edit-folder-form", { folder, dialogId: `editFormDialog`, looseFiles });%>
+      <%- include("list-files", { files: folder.files }); %>
+    </main>
+  </body>
+</html>

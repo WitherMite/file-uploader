@@ -39,12 +39,25 @@ exports.renderLoginForm = async (req, res) => {
 };
 
 exports.renderHomepage = async (req, res) => {
-  if (req.isAuthenticated()) {
-    const { username, folders, files } = req.user;
-    console.table(files);
-    return res.render("home", { username, folders, files });
+  if (!req.isAuthenticated()) return res.redirect("/");
+  const { username, folders, files } = req.user;
+  return res.render("home", { username, folders, files });
+};
+
+exports.renderFolder = async (req, res, next) => {
+  if (!req.isAuthenticated()) return res.redirect("/");
+  try {
+    const folder = await prisma.folder.findUnique({
+      where: { id: Number(req.params.folderId) },
+      include: { files: true },
+    });
+
+    if (!folder) return res.redirect("/home");
+    return res.render("folder", { folder, looseFiles: req.user.files });
+  } catch (e) {
+    console.error(e);
+    next(e);
   }
-  return res.redirect("/");
 };
 
 // CRUD
@@ -78,28 +91,16 @@ exports.createUser = [
   },
 ];
 
-exports.createFolder = [
-  async (req, res, next) => {
-    if (!req.isAuthenticated()) return res.status(400).redirect("/");
-    const { name } = req.body;
-    await prisma.folder.create({
-      data: { name, user: { connect: { id: req.user.id } } },
-    });
-    res.redirect("/home");
-  },
-];
+// files
 
 exports.uploadFile = [
   async (req, res, next) => {
-    if (req.isAuthenticated()) {
-      return next();
-    }
+    if (req.isAuthenticated()) return next();
     return res.status(400).redirect("/");
   },
   upload.single("file"),
   async (req, res) => {
     const { filename, path, size, mimetype } = req.file;
-    console.table(req.file);
     await prisma.file.create({
       data: {
         filename,
@@ -113,20 +114,45 @@ exports.uploadFile = [
   },
 ];
 
-// TODO: ensure this doesnt try to add a file that has a folder to another with a custom form validation fn
-exports.addFilesToFolder = [
+// folders
+
+exports.createFolder = [
   async (req, res, next) => {
-    const { folderId, fileIds } = req.body;
-    const connectList = [];
-    [...fileIds].forEach((id) => connectList.push({ id: Number(id) }));
-    await prisma.folder.update({
-      where: { id: Number(folderId) },
-      data: {
-        files: {
-          connect: connectList,
-        },
-      },
+    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    const { name } = req.body;
+    await prisma.folder.create({
+      data: { name, user: { connect: { id: req.user.id } } },
     });
     res.redirect("/home");
+  },
+];
+
+// TODO: ensure this doesnt try to add a file that has a folder to another, or remove a file not in a folder with custom form validation
+exports.updateFolder = [
+  async (req, res, next) => {
+    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    const { foldername, folderId, addFileIds, removeFileIds } = req.body;
+
+    const updateData = { files: {} };
+    const connectList = [];
+    const disconnectList = [];
+
+    if (foldername) updateData.name = foldername;
+    if (addFileIds) {
+      [...addFileIds].forEach((id) => connectList.push({ id: Number(id) }));
+      updateData.files.connect = connectList;
+    }
+    if (removeFileIds) {
+      [...removeFileIds].forEach((id) =>
+        disconnectList.push({ id: Number(id) })
+      );
+      updateData.files.disconnect = disconnectList;
+    }
+
+    await prisma.folder.update({
+      where: { id: Number(folderId) },
+      data: updateData,
+    });
+    res.redirect(req.get("Referrer") || "/home");
   },
 ];

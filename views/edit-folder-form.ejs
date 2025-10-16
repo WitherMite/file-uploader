@@ -1,0 +1,56 @@
+<!-- prettier-ignore -->
+<%# needed locals: folder, dialogId, looseFiles %>
+<%# dialogId must be unique on the page and a valid JS var name %>
+<button type="button" onclick="open<%= dialogId %>()">Edit Folder</button>
+
+<dialog id="<%= dialogId %>">
+  <form action="/folder" method="post">
+    <button type="button" onclick="close<%= dialogId %>()">X</button>
+    <input type="hidden" name="folderId" value="<%= folder.id %>" />
+
+    <div class="form-control">
+      <label for="<%= dialogId %>name"> Folder Name:</label>
+      <input
+        type="text"
+        name="foldername"
+        id="<%= dialogId %>name"
+        value="<%= folder.name %>"
+      />
+    </div>
+
+    <% if (looseFiles.length > 0) {%>
+    <div class="form-control">
+      <!-- prettier-ignore -->
+      <label for="<%= dialogId %>AddSelect">Select all files to add to folder</label>
+      <select name="addFileIds" id="<%= dialogId %>AddSelect" multiple>
+        <% looseFiles.forEach(file => {%>
+        <option value="<%= file.id %>"><%= file.filename %></option>
+        <% }); %>
+      </select>
+    </div>
+
+    <% } if (folder.files.length > 0) {%>
+    <div class="form-control">
+      <!-- prettier-ignore -->
+      <label for="<%= dialogId %>RemoveSelect">Select all files to remove from folder</label>
+      <select name="removeFileIds" id="<%= dialogId %>RemoveSelect" multiple>
+        <% folder.files.forEach(file => {%>
+        <option value="<%= file.id %>"><%= file.filename %></option>
+        <% }); %>
+      </select>
+    </div>
+    <% } %>
+
+    <button type="submit">Submit</button>
+  </form>
+</dialog>
+
+<script>
+  const dialog = document.querySelector("#<%= dialogId %>");
+  const open<%= dialogId %> = () => {
+    dialog.showModal();
+  };
+  const close<%= dialogId %> = () => {
+    dialog.close();
+  };
+</script>

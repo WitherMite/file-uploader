@@ -1,12 +1,13 @@
 <% folders.forEach((folder) => { %>
 <div class="folder-card">
   <h2><%= folder.name %></h2>
-  <p>Contains <%= folder.files.length %> files</p>
-  <button>View</button>
+  <p>
+    Contains <%= folder.files.length %> files, <%= folder.files.reduce((size,
+    file) => size + file.size, 0) %> bytes
+  </p>
+  <a href="folder/<%= folder.id %>"><button>View</button></a>
   <!-- prettier-ignore -->
-  <% if (files.length > 0) { %>
-  <%- include("add-to-folder-form", { buttonText: "Add Files", folderId: folder.id, dialogId: `folder${folder.id}Dialog` }); %>
-  <% } %>
+  <%- include("edit-folder-form", { folder, dialogId: `folder${folder.id}Dialog`, looseFiles }); %>
   <button>Delete</button>
 </div>
 <% }); %>

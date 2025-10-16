@@ -32,9 +32,9 @@
             <label for="folder-name">Name:</label>
             <input type="text" name="name" id="folder-name" />
           </div>
-          <button type="submit">Upload</button>
+          <button type="submit">Create</button>
         </form>
-        <%- include("list-folders", {folders}); %>
+        <%- include("list-folders", {folders, looseFiles: files}); %>
       </section>
 
       <% if (files.length > 0) { %>
