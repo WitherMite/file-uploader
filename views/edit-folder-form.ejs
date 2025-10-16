@@ -46,11 +46,12 @@
 </dialog>
 
 <script>
-  const dialog = document.querySelector("#<%= dialogId %>");
   const open<%= dialogId %> = () => {
+    const dialog = document.querySelector("#<%= dialogId %>");
     dialog.showModal();
   };
   const close<%= dialogId %> = () => {
+    const dialog = document.querySelector("#<%= dialogId %>");
     dialog.close();
   };
 </script>
