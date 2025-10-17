@@ -1,11 +1,11 @@
 require("dotenv").config();
+const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const express = require("express");
+const expressSession = require("express-session");
 const app = express();
 const router = require("./routes/router");
-const expressSession = require("express-session");
 const passportStrategy = require("./config/passportStrategy");
-const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
-const { PrismaClient } = require("./generated/prisma");
+const prisma = require("./config/db");
 
 app.set("view engine", "ejs");
 
@@ -16,7 +16,7 @@ app.use(
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
-    store: new PrismaSessionStore(new PrismaClient(), {
+    store: new PrismaSessionStore(prisma, {
       checkPeriod: 2 * 60 * 1000,
       dbRecordIdIsSessionId: true,
       dbRecordIdFunction: undefined,

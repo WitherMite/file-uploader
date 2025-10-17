@@ -1,11 +1,10 @@
 const { validationResult } = require("express-validator");
-const { PrismaClient } = require("../generated/prisma");
 const bcrypt = require("bcryptjs");
 const passportStrategy = require("../config/passportStrategy");
 const validators = require("./validators");
 const multer = require("multer");
+const prisma = require("../config/db");
 
-const prisma = new PrismaClient();
 const upload = multer({ dest: "public/files/" });
 
 // authentication
