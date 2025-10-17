@@ -114,6 +114,8 @@ exports.uploadFile = [
   },
 ];
 
+exports.deleteFile = [];
+
 // folders
 
 exports.createFolder = [
@@ -153,6 +155,29 @@ exports.updateFolder = [
       where: { id: Number(folderId) },
       data: updateData,
     });
+    res.redirect(req.get("Referrer") || "/home");
+  },
+];
+
+exports.deleteFolder = [
+  async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    const id = Number(req.params.id);
+    const moveFiles = prisma.folder.update({
+      where: {
+        id,
+      },
+      data: { files: { set: [] } },
+    });
+
+    const deleteFolder = prisma.folder.delete({
+      where: {
+        id,
+      },
+    });
+
+    await prisma.$transaction([moveFiles, deleteFolder]);
+
     res.redirect(req.get("Referrer") || "/home");
   },
 ];

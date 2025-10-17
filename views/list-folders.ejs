@@ -8,6 +8,8 @@
   <a href="folder/<%= folder.id %>"><button>View</button></a>
   <!-- prettier-ignore -->
   <%- include("edit-folder-form", { folder, dialogId: `folder${folder.id}Dialog`, looseFiles }); %>
-  <button>Delete</button>
+  <form action="/delete-folder/<%= folder.id %>" method="post">
+    <button type="submit">Delete</button>
+  </form>
 </div>
 <% }); %>
