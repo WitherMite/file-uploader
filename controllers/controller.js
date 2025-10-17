@@ -100,6 +100,8 @@ exports.uploadFile = [
   upload.single("file"),
   async (req, res) => {
     const { filename, path, size, mimetype } = req.file;
+    const { folderId } = req.body;
+    const folder = folderId ? { connect: { id: Number(folderId) } } : {};
     await prisma.file.create({
       data: {
         filename,
@@ -107,9 +109,10 @@ exports.uploadFile = [
         mimetype,
         path: path.substring(6), // removes public/ from path since express starts there for static assets
         user: { connect: { id: req.user.id } },
+        folder,
       },
     });
-    res.redirect("/home");
+    res.redirect(req.get("Referrer") || "/home");
   },
 ];
 
@@ -128,7 +131,7 @@ exports.createFolder = [
   },
 ];
 
-// TODO: ensure this doesnt try to add a file that has a folder to another, or remove a file not in a folder with custom form validation
+// TODO: ensure this doesnt try to add a file that has a folder to another with custom form validation
 exports.updateFolder = [
   async (req, res, next) => {
     if (!req.isAuthenticated()) return res.status(400).redirect("/");
