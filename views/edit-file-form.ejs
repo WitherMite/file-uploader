@@ -1,0 +1,51 @@
+<!-- prettier-ignore -->
+<%# needed locals: folders, dialogId, file %>
+<%# dialogId must be unique on the page and a valid JS var name %>
+<button type="button" onclick="open<%= dialogId %>()">Edit File</button>
+
+<dialog id="<%= dialogId %>">
+  <form action="/file" method="post">
+    <button type="button" onclick="close<%= dialogId %>()">X</button>
+    <input type="hidden" name="id" value="<%= file.id %>" />
+
+    <div class="form-control">
+      <label for="<%= dialogId %>name"> File Name:</label>
+      <input
+        type="text"
+        name="name"
+        id="<%= dialogId %>name"
+        value="<%= file.name %>"
+      />
+    </div>
+
+    <% if (folders.length > 0) {%>
+    <!-- prettier-ignore -->
+    <div class="form-control">
+      <label for="<%= dialogId %>moveSelect">Select folder to store in</label>
+      <select name="folderId" id="<%= dialogId %>moveSelect">
+        <option value="">none</option>
+        <% folders.forEach(folder => {
+           const checkSelected = () => file.folderId === folder.id ? "selected" : ""
+        %>
+        <option value="<%= folder.id %>" <%= checkSelected() %>>
+           <%= folder.name %>
+        </option>
+        <% }); %>
+      </select>
+    </div>
+    <% } %>
+
+    <button type="submit">Submit</button>
+  </form>
+</dialog>
+
+<script>
+  const open<%= dialogId %> = () => {
+    const dialog = document.querySelector("#<%= dialogId %>");
+    dialog.showModal();
+  };
+  const close<%= dialogId %> = () => {
+    const dialog = document.querySelector("#<%= dialogId %>");
+    dialog.close();
+  };
+</script>

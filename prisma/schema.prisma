@@ -44,6 +44,7 @@ model file {
     folder folder? @relation(fields: [folderId], references: [id])
     folderId Int?
     filename String @unique
+    name String
     path String 
     size Int
     mimetype String

@@ -1,12 +1,13 @@
-<% files.forEach((file) => { %>
+<% files.forEach((file, i) => { %>
 <div class="file-card">
-  <h2><%= file.filename %></h2>
+  <h2><%= file.name %></h2>
   <p><%= file.size %> bytes</p>
   <p>Uploaded: <%= file.createdAt %></p>
   <% if (file.mimetype.startsWith("image/")) { %>
   <img src="<%= file.path %>" alt="" class="file-image" />
   <% } %>
-  <button><%= file.folderId ? "Change" : "Add to" %> Folder</button>
+  <!-- prettier-ignore -->
+  <%- include("edit-file-form", { folders, dialogId: `editFileDialog${i}`, file });%>
   <form action="/delete-file/<%= file.id %>" method="post">
     <button type="submit">Delete</button>
   </form>

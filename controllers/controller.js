@@ -52,7 +52,11 @@ exports.renderFolder = async (req, res, next) => {
     });
 
     if (!folder) return res.redirect("/home");
-    return res.render("folder", { folder, looseFiles: req.user.files });
+    return res.render("folder", {
+      folder,
+      looseFiles: req.user.files,
+      folders: req.user.folders,
+    });
   } catch (e) {
     console.error(e);
     next(e);
@@ -100,10 +104,11 @@ exports.uploadFile = [
   upload.single("file"),
   async (req, res) => {
     const { filename, path, size, mimetype } = req.file;
-    const { folderId } = req.body;
+    const { folderId, name } = req.body;
     const folder = folderId ? { connect: { id: Number(folderId) } } : {};
     await prisma.file.create({
       data: {
+        name,
         filename,
         size,
         mimetype,
@@ -111,6 +116,28 @@ exports.uploadFile = [
         user: { connect: { id: req.user.id } },
         folder,
       },
+    });
+    res.redirect(req.get("Referrer") || "/home");
+  },
+];
+
+exports.updateFile = [
+  async (req, res, next) => {
+    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    const { id, name, folderId } = req.body;
+
+    const updateData = { folder: {} };
+
+    if (name) updateData.name = name;
+    if (folderId) {
+      updateData.folder.connect = { id: Number(folderId) };
+    } else {
+      updateData.folder.disconnect = true;
+    }
+
+    await prisma.file.update({
+      where: { id: Number(id) },
+      data: updateData,
     });
     res.redirect(req.get("Referrer") || "/home");
   },
