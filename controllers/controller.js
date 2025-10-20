@@ -1,9 +1,10 @@
 const { validationResult } = require("express-validator");
-const bcrypt = require("bcryptjs");
+const fs = require("node:fs");
 const passportStrategy = require("../config/passportStrategy");
 const validators = require("./validators");
-const multer = require("multer");
 const prisma = require("../config/db");
+const bcrypt = require("bcryptjs");
+const multer = require("multer");
 
 const upload = multer({ dest: "public/files/" });
 
@@ -143,7 +144,26 @@ exports.updateFile = [
   },
 ];
 
-exports.deleteFile = [];
+exports.deleteFile = [
+  async (req, res, next) => {
+    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    const id = Number(req.params.id);
+    const file = await prisma.file.findUnique({ where: { id: id } });
+
+    fs.unlink(`./public${file.path}`, async (e) => {
+      if (e) {
+        console.error(e);
+        next(e);
+      }
+      await prisma.file.delete({
+        where: {
+          id,
+        },
+      });
+      res.redirect(req.get("Referrer") || "/home");
+    });
+  },
+];
 
 // folders
 
