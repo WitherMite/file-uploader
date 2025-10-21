@@ -1,7 +1,9 @@
 <!-- prettier-ignore -->
 <%# needed locals: folders, dialogId, file %>
 <%# dialogId must be unique on the page and a valid JS var name %>
-<button type="button" onclick="open<%= dialogId %>()">Edit File</button>
+<div>
+  <button type="button" onclick="open<%= dialogId %>()">Edit File</button>
+</div>
 
 <dialog id="<%= dialogId %>">
   <form action="/file" method="post">

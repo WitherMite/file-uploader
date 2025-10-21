@@ -1,12 +1,20 @@
 <% files.forEach((file, i) => { %>
+<!-- prettier-ignore -->
 <div class="file-card">
   <h2><%= file.name %></h2>
   <p><%= file.size %> bytes</p>
   <p>Uploaded: <%= file.createdAt %></p>
+  <div>
+    <a 
+      href="<%= file.path %>"
+      download="<%= file.name %>.<%= file.mimetype.substring(file.mimetype.indexOf("/") + 1) %>"
+    >
+      <button type="button">Download</button>
+    </a>
+  </div>
   <% if (file.mimetype.startsWith("image/")) { %>
   <img src="<%= file.path %>" alt="" class="file-image" />
   <% } %>
-  <!-- prettier-ignore -->
   <%- include("edit-file-form", { folders, dialogId: `editFileDialog${i}`, file });%>
   <form action="/delete-file/<%= file.id %>" method="post">
     <button type="submit">Delete</button>
