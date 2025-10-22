@@ -4,9 +4,7 @@ const passportStrategy = require("../config/passportStrategy");
 const validators = require("./validators");
 const prisma = require("../config/db");
 const bcrypt = require("bcryptjs");
-const multer = require("multer");
-
-const upload = multer({ dest: "public/files/" });
+const upload = require("../config/upload");
 
 // authentication
 
@@ -97,11 +95,21 @@ exports.createUser = [
 
 // files
 
+const checkPOSTValidation = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).redirect(req.get("Referrer") || "/home");
+  }
+  next();
+};
+
 exports.uploadFile = [
   async (req, res, next) => {
     if (req.isAuthenticated()) return next();
     return res.status(400).redirect("/");
   },
+  validators.validateFile,
+  checkPOSTValidation,
   upload.single("file"),
   async (req, res) => {
     const { filename, path, size, mimetype } = req.file;
@@ -123,6 +131,8 @@ exports.uploadFile = [
 ];
 
 exports.updateFile = [
+  validators.validateFileUpdate,
+  checkPOSTValidation,
   async (req, res, next) => {
     if (!req.isAuthenticated()) return res.status(400).redirect("/");
     const { id, name, folderId } = req.body;
@@ -168,6 +178,8 @@ exports.deleteFile = [
 // folders
 
 exports.createFolder = [
+  validators.validateFolder,
+  checkPOSTValidation,
   async (req, res, next) => {
     if (!req.isAuthenticated()) return res.status(400).redirect("/");
     const { name } = req.body;
@@ -178,17 +190,18 @@ exports.createFolder = [
   },
 ];
 
-// TODO: ensure this doesnt try to add a file that has a folder to another with custom form validation
 exports.updateFolder = [
+  validators.validateFolderUpdate,
+  checkPOSTValidation,
   async (req, res, next) => {
     if (!req.isAuthenticated()) return res.status(400).redirect("/");
-    const { foldername, folderId, addFileIds, removeFileIds } = req.body;
+    const { name, id, addFileIds, removeFileIds } = req.body;
 
     const updateData = { files: {} };
     const connectList = [];
     const disconnectList = [];
 
-    if (foldername) updateData.name = foldername;
+    if (name) updateData.name = name;
     if (addFileIds) {
       [...addFileIds].forEach((id) => connectList.push({ id: Number(id) }));
       updateData.files.connect = connectList;
@@ -201,7 +214,7 @@ exports.updateFolder = [
     }
 
     await prisma.folder.update({
-      where: { id: Number(folderId) },
+      where: { id: Number(id) },
       data: updateData,
     });
     res.redirect(req.get("Referrer") || "/home");

@@ -9,6 +9,8 @@ const checkUsernameUnique = async (val) => {
   }
 };
 
+const checkAllIds = (array) => array.every((id) => Number(id) % 1 === 0);
+
 exports.validateUser = [
   body("username")
     .trim()
@@ -23,4 +25,20 @@ exports.validateUser = [
   body("confirmPassword")
     .custom((val, { req }) => val === req.body.password)
     .withMessage("Password fields must match"),
+];
+
+exports.validateFile = [
+  body("folderId").optional().isInt({ min: 0 }),
+  body("name").trim(),
+];
+
+exports.validateFileUpdate = [this.validateFile, body("id").isInt({ min: 0 })];
+
+exports.validateFolder = [body("name").trim()];
+
+exports.validateFolderUpdate = [
+  this.validateFolder,
+  body("id").isInt({ min: 0 }),
+  body("addFileIds").optional().toArray().custom(checkAllIds),
+  body("removeFileIds").optional().toArray().custom(checkAllIds),
 ];

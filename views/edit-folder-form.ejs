@@ -8,13 +8,13 @@
 <dialog id="<%= dialogId %>">
   <form action="/folder" method="post">
     <button type="button" onclick="close<%= dialogId %>()">X</button>
-    <input type="hidden" name="folderId" value="<%= folder.id %>" />
+    <input type="hidden" name="id" value="<%= folder.id %>" />
 
     <div class="form-control">
       <label for="<%= dialogId %>name"> Folder Name:</label>
       <input
         type="text"
-        name="foldername"
+        name="name"
         id="<%= dialogId %>name"
         value="<%= folder.name %>"
       />
