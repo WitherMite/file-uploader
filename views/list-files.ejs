@@ -14,6 +14,21 @@
   </div>
   <% if (file.mimetype.startsWith("image/")) { %>
   <img src="<%= file.path %>" alt="" class="file-image" />
+  <% } else if (file.mimetype.startsWith("video/")) { %>
+    <video src="<%= file.path %>" preload="metadata" controls></video>
+  <% } else if (file.mimetype.startsWith("audio/")) { %>
+    <audio src="<%= file.path %>" preload="metadata" controls></audio>
+  <% } else if (file.mimetype.startsWith("text/")) { %> 
+    <pre id="<%= file.filename %>"></pre>
+
+    <script>
+      fetch("<%= file.path %>")
+        .then(res => res.text())
+        .then(data => {
+          document.getElementById("<%= file.filename %>").innerText = data;
+        })
+        .catch(error => console.error('Error fetching text file:', error));
+    </script>
   <% } %>
   <%- include("edit-file-form", { folders, dialogId: `editFileDialog${i}`, file });%>
   <form action="/delete-file/<%= file.id %>" method="post">
