@@ -4,30 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>File Uploader</title>
+    <link rel="stylesheet" href="/styles/style.css" />
   </head>
   <body>
     <header>
-      <h1>Welcome, <%= username %>!</h1>
       <nav>
+        <h1>Welcome, <%= username %>!</h1>
         <div>
           <a href="/"><button>Main Page</button></a>
         </div>
         <form action="/logout" method="post">
           <button type="submit">logout</button>
         </form>
-        <form action="/upload" method="post" enctype="multipart/form-data">
-          <h2>Upload File:</h2>
-          <div class="form-control">
-            <label for="file">File:</label>
-            <input type="file" name="file" id="file" />
-          </div>
-          <div class="form-control">
-            <label for="file-name">Name:</label>
-            <input type="text" name="name" id="file-name" required />
-          </div>
-          <button type="submit">Upload</button>
-        </form>
       </nav>
+      <form action="/upload" method="post" enctype="multipart/form-data">
+        <h2>Upload File:</h2>
+        <div class="form-control">
+          <label for="file">File:</label>
+          <input type="file" name="file" id="file" />
+        </div>
+        <div class="form-control">
+          <label for="file-name">Name:</label>
+          <input type="text" name="name" id="file-name" required />
+        </div>
+        <button type="submit">Upload</button>
+      </form>
     </header>
 
     <main>

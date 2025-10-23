@@ -4,17 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= folder.name %></title>
+    <link rel="stylesheet" href="/styles/style.css" />
   </head>
   <body>
-    <nav>
-      <div>
-        <a href="/home"><button>Home</button></a>
-      </div>
-    </nav>
-    <main>
-      <h1><%= folder.name %></h1>
-      <!-- prettier-ignore -->
-      <%- include("edit-folder-form", { folder, dialogId: `editFormDialog`, looseFiles });%>
+    <header>
+      <nav>
+        <h1><%= folder.name %></h1>
+        <div>
+          <a href="/home"><button>Home</button></a>
+        </div>
+        <%- include("edit-folder-form", { folder, dialogId: `editFormDialog`,
+        looseFiles });%>
+      </nav>
       <form action="/upload" method="post" enctype="multipart/form-data">
         <input type="hidden" name="folderId" value="<%= folder.id %>" />
         <h2>Upload File:</h2>
@@ -28,6 +29,10 @@
         </div>
         <button type="submit">Upload</button>
       </form>
+    </header>
+    <main>
+      <!-- prettier-ignore -->
+
       <%- include("list-files", { files: folder.files }); %>
     </main>
   </body>

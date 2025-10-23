@@ -4,20 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
+    <link rel="stylesheet" href="/styles/style.css" />
   </head>
   <body>
-    <form action="/login" method="post">
-      <div class="form-control">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required />
-      </div>
-
-      <div class="form-control">
-        <label for="pass">Password:</label>
-        <input type="password" id="pass" name="password" required />
-      </div>
-
-      <button type="submit">Log in</button>
-    </form>
+    <main>
+      <form action="/login" method="post">
+        <div class="form-control">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div class="form-control">
+          <label for="pass">Password:</label>
+          <input type="password" id="pass" name="password" required />
+        </div>
+        <button type="submit">Log in</button>
+      </form>
+    </main>
   </body>
 </html>
