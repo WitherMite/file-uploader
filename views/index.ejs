@@ -6,8 +6,26 @@
     <title>File Uploader</title>
   </head>
   <body>
-    <a href="/home">homepage</a>
-    <a href="/login">login</a>
-    <a href="/signup">signup</a>
+    <header>
+      <nav>
+        <h1>File Uploader</h1>
+        <div>
+          <a href="/home"><button>homepage</button></a>
+        </div>
+        <% if (locals.user) { %>
+        <form action="/logout" method="post">
+          <button type="submit">logout</button>
+        </form>
+        <% } else { %>
+        <div>
+          <a href="/login"><button>login</button></a>
+        </div>
+        <div>
+          <a href="/signup"><button>signup</button></a>
+        </div>
+        <% } %>
+      </nav>
+    </header>
+    <main></main>
   </body>
 </html>

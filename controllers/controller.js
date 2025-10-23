@@ -25,7 +25,7 @@ exports.logoutUser = (req, res, next) => {
 // render methods
 
 exports.renderIndex = async (req, res) => {
-  res.render("index");
+  res.render("index", { user: req.user });
 };
 
 exports.renderSignupForm = async (req, res) => {
