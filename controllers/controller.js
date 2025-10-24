@@ -112,15 +112,17 @@ exports.uploadFile = [
   checkPOSTValidation,
   upload.single("file"),
   async (req, res) => {
-    const { filename, path, size, mimetype } = req.file;
+    const { filename, path, size, mimetype, originalname } = req.file;
     const { folderId, name } = req.body;
     const folder = folderId ? { connect: { id: Number(folderId) } } : {};
+    const extension = originalname.substring(originalname.lastIndexOf(".") + 1);
     await prisma.file.create({
       data: {
         name,
         filename,
         size,
         mimetype,
+        extension,
         path: path.substring(6), // removes public/ from path since express starts there for static assets
         user: { connect: { id: req.user.id } },
         folder,

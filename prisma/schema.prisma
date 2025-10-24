@@ -48,5 +48,6 @@ model file {
     path String 
     size Int
     mimetype String
+    extension String
     createdAt DateTime @default(now())
 }
