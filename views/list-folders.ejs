@@ -5,11 +5,13 @@
     Contains <%= folder.files.length %> files, <%= folder.files.reduce((size,
     file) => size + file.size, 0) %> bytes
   </p>
-  <a href="folder/<%= folder.id %>"><button>View</button></a>
-  <!-- prettier-ignore -->
-  <%- include("edit-folder-form", { folder, dialogId: `folder${folder.id}Dialog`, looseFiles }); %>
-  <form action="/delete-folder/<%= folder.id %>" method="post">
-    <button type="submit">Delete</button>
-  </form>
+  <div class="folder-controls">
+    <a href="folder/<%= folder.id %>"><button>View</button></a>
+    <!-- prettier-ignore -->
+    <%- include("edit-folder-form", { folder, dialogId: `folder${folder.id}Dialog`, looseFiles }); %>
+    <form action="/delete-folder/<%= folder.id %>" method="post">
+      <button type="submit">Delete</button>
+    </form>
+  </div>
 </div>
 <% }); %>

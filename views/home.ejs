@@ -17,7 +17,12 @@
           <button type="submit">logout</button>
         </form>
       </nav>
-      <form action="/upload" method="post" enctype="multipart/form-data">
+      <form
+        action="/upload"
+        method="post"
+        enctype="multipart/form-data"
+        class="small-form"
+      >
         <h2>Upload File:</h2>
         <div class="form-control">
           <label for="file">File:</label>
@@ -34,7 +39,7 @@
     <main>
       <section class="folders">
         <h1>Folders:</h1>
-        <form action="/new-folder" method="post">
+        <form action="/new-folder" method="post" class="small-form">
           <h2>Create Folder:</h2>
           <div class="form-control">
             <label for="folder-name">Name:</label>
@@ -42,13 +47,15 @@
           </div>
           <button type="submit">Create</button>
         </form>
-        <%- include("list-folders", {folders, looseFiles: files}); %>
+        <div class="folder-container">
+          <%- include("list-folders", {folders, looseFiles: files}); %>
+        </div>
       </section>
 
       <% if (files.length > 0) { %>
       <section class="loose-files">
-        <h1>Loose Files</h1>
-        <%- include("list-files", {files}); %>
+        <h1>Loose Files:</h1>
+        <div class="file-container"><%- include("list-files", {files}); %></div>
       </section>
       <% } %>
     </main>

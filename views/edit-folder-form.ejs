@@ -6,8 +6,11 @@
 </div>
 
 <dialog id="<%= dialogId %>">
+  <h2>Edit Folder:</h2>
   <form action="/folder" method="post">
-    <button type="button" onclick="close<%= dialogId %>()">X</button>
+    <button type="button" class="close-button" onclick="close<%= dialogId %>()">
+      X
+    </button>
     <input type="hidden" name="id" value="<%= folder.id %>" />
 
     <div class="form-control">
@@ -26,7 +29,7 @@
       <label for="<%= dialogId %>AddSelect">Select all files to add to folder</label>
       <select name="addFileIds" id="<%= dialogId %>AddSelect" multiple>
         <% looseFiles.forEach(file => {%>
-        <option value="<%= file.id %>"><%= file.filename %></option>
+        <option value="<%= file.id %>"><%= file.name %></option>
         <% }); %>
       </select>
     </div>
@@ -37,7 +40,7 @@
       <label for="<%= dialogId %>RemoveSelect">Select all files to remove from folder</label>
       <select name="removeFileIds" id="<%= dialogId %>RemoveSelect" multiple>
         <% folder.files.forEach(file => {%>
-        <option value="<%= file.id %>"><%= file.filename %></option>
+        <option value="<%= file.id %>"><%= file.name %></option>
         <% }); %>
       </select>
     </div>

@@ -6,8 +6,11 @@
 </div>
 
 <dialog id="<%= dialogId %>">
+  <h2>Edit File:</h2>
   <form action="/file" method="post">
-    <button type="button" onclick="close<%= dialogId %>()">X</button>
+    <button type="button" class="close-button" onclick="close<%= dialogId %>()">
+      X
+    </button>
     <input type="hidden" name="id" value="<%= file.id %>" />
 
     <div class="form-control">

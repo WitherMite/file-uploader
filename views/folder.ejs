@@ -16,7 +16,12 @@
         <%- include("edit-folder-form", { folder, dialogId: `editFormDialog`,
         looseFiles });%>
       </nav>
-      <form action="/upload" method="post" enctype="multipart/form-data">
+      <form
+        action="/upload"
+        method="post"
+        enctype="multipart/form-data"
+        class="small-form"
+      >
         <input type="hidden" name="folderId" value="<%= folder.id %>" />
         <h2>Upload File:</h2>
         <div class="form-control">
@@ -30,7 +35,7 @@
         <button type="submit">Upload</button>
       </form>
     </header>
-    <main>
+    <main class="file-container">
       <!-- prettier-ignore -->
 
       <%- include("list-files", { files: folder.files }); %>

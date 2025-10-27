@@ -4,11 +4,113 @@
   padding: 0;
 }
 
-header,
-main {
+body {
+  max-width: 1500px;
   padding: 1.5rem;
+  margin: auto;
 }
 
 nav {
   display: flex;
+  gap: 0.5rem;
+  justify-items: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+nav h1 {
+  margin-right: auto;
+}
+
+button {
+  font-size: 1rem;
+  padding: 0.25rem 0.75rem;
+}
+
+img {
+  width: auto;
+  object-fit: contain;
+}
+
+dialog {
+  margin: auto;
+  padding: 1rem 1.5rem;
+}
+
+dialog h2 {
+  padding-bottom: 0.5rem;
+}
+
+.form-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-width: 50ch;
+}
+
+select {
+  width: 40ch;
+  padding: 0.25ch 1.5ch;
+}
+
+.folder-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.folder-card,
+.file-card,
+.small-form,
+dialog form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.file-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 450px);
+  gap: 0.75rem;
+}
+
+.file-card {
+  height: 800px;
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.file-controls,
+.folder-controls {
+  display: flex;
+  justify-content: end;
+  gap: 0.5rem;
+}
+
+.file-content {
+  max-width: 450px;
+  overflow: auto;
+}
+
+pre {
+  color: white;
+  background-color: rgb(43, 43, 43);
+  padding: 0.5rem;
+}
+
+.small-form {
+  margin-bottom: 1rem;
+}
+
+.close-button {
+  align-self: end;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
 }

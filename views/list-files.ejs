@@ -1,25 +1,33 @@
 <% files.forEach((file, i) => { %>
 <!-- prettier-ignore -->
 <div class="file-card">
-  <h2><%= file.name %></h2>
-  <p><%= file.size %> bytes</p>
-  <p>Uploaded: <%= file.createdAt %></p>
-  <div>
-    <a 
-      href="<%= file.path %>"
-      download="<%= file.name %>.<%= file.extension %>"
-    >
-      <button type="button">Download</button>
-    </a>
+  <div class="file-info">
+    <h2 class="file-name"><%= file.name %></h2>
+    <p class="upload-date">Uploaded: <%= file.createdAt %></p>
+    <p class="file-size"><%= file.size %> bytes</p>
+    <div class="file-controls">
+      <div>
+        <a
+          href="<%= file.path %>"
+          download="<%= file.name %>.<%= file.extension %>"
+        >
+          <button type="button">Download</button>
+        </a>
+      </div>
+      <%- include("edit-file-form", { folders, dialogId: `editFileDialog${i}`, file });%>
+      <form action="/delete-file/<%= file.id %>" method="post">
+        <button type="submit">Delete</button>
+      </form>
+    </div>
   </div>
   <% if (file.mimetype.startsWith("image/")) { %>
-  <img src="<%= file.path %>" alt="" class="file-image" />
+  <img src="<%= file.path %>" alt="" class="file-content" />
   <% } else if (file.mimetype.startsWith("video/")) { %>
-    <video src="<%= file.path %>" preload="metadata" controls></video>
+    <video src="<%= file.path %>" preload="metadata" class="file-content" controls></video>
   <% } else if (file.mimetype.startsWith("audio/")) { %>
-    <audio src="<%= file.path %>" preload="metadata" controls></audio>
+    <audio src="<%= file.path %>" preload="metadata" class="file-content" controls></audio>
   <% } else if (file.mimetype.startsWith("text/")) { %> 
-    <pre id="<%= file.filename %>"></pre>
+    <pre id="<%= file.filename %>" class="file-content" ></pre>
 
     <script>
       fetch("<%= file.path %>")
@@ -30,9 +38,5 @@
         .catch(error => console.error('Error fetching text file:', error));
     </script>
   <% } %>
-  <%- include("edit-file-form", { folders, dialogId: `editFileDialog${i}`, file });%>
-  <form action="/delete-file/<%= file.id %>" method="post">
-    <button type="submit">Delete</button>
-  </form>
 </div>
 <% }); %>
