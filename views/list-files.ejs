@@ -14,10 +14,12 @@
           <button type="button">Download</button>
         </a>
       </div>
+      <% if (!locals.shared) { %>
       <%- include("edit-file-form", { folders, dialogId: `editFileDialog${i}`, file });%>
       <form action="/delete-file/<%= file.id %>" method="post">
         <button type="submit">Delete</button>
       </form>
+      <% } %>
     </div>
   </div>
   <% if (file.mimetype.startsWith("image/")) { %>

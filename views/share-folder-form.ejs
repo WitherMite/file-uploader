@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Share Folder</title>
+    <link rel="stylesheet" href="/styles/style.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <h1>Create a Link to Share Folder "<%= folder.name %>":</h1>
+        <div>
+          <a href="/home"><button>Home</button></a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <form action="/share" method="post" class="small-form">
+        <input type="hidden" name="id" value="<%= folder.id %>" />
+        <div class="form-control">
+          <label for="duration">Days before Expiring:</label
+          ><input
+            type="number"
+            name="duration"
+            id="duration"
+            min="1"
+            max="28"
+            step="1"
+            value="3"
+          />
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </main>
+  </body>
+</html>

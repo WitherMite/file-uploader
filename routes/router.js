@@ -7,6 +7,8 @@ router.get("/home", controller.renderHomepage);
 router.get("/signup", controller.renderSignupForm);
 router.get("/login", controller.renderLoginForm);
 router.get("/folder/:folderId", controller.renderFolder);
+router.get("/share", controller.renderShareForm);
+router.get("/share/:link", controller.renderShareLink);
 
 router.post("/signup", controller.createUser);
 router.post("/login", controller.loginUser);
@@ -17,5 +19,6 @@ router.post("/folder", controller.updateFolder);
 router.post("/delete-folder/:id", controller.deleteFolder);
 router.post("/file", controller.updateFile);
 router.post("/delete-file/:id", controller.deleteFile);
+router.post("/share", controller.createShareLink);
 
 module.exports = router;

@@ -5,6 +5,7 @@ const validators = require("./validators");
 const prisma = require("../config/db");
 const bcrypt = require("bcryptjs");
 const upload = require("../config/upload");
+const crypto = require("node:crypto");
 
 // authentication
 
@@ -47,7 +48,7 @@ exports.renderFolder = async (req, res, next) => {
   try {
     const folder = await prisma.folder.findUnique({
       where: { id: Number(req.params.folderId) },
-      include: { files: true },
+      include: { files: true, shares: true },
     });
 
     if (!folder) return res.redirect("/home");
@@ -55,12 +56,44 @@ exports.renderFolder = async (req, res, next) => {
       folder,
       looseFiles: req.user.files,
       folders: req.user.folders,
+      url: req.host,
     });
   } catch (e) {
     console.error(e);
     next(e);
   }
 };
+
+exports.renderShareForm = async (req, res, next) => {
+  if (!req.isAuthenticated()) return res.redirect("/");
+  try {
+    const folder = await prisma.folder.findUnique({
+      where: { id: Number(req.query.id), user: { id: req.user.id } },
+    });
+
+    if (!folder) return res.redirect(req.get("Referrer") || "/home");
+    return res.render("share-folder-form", { folder });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+exports.renderShareLink = [
+  async (req, res) => {
+    const link = req.params.link;
+    const share = await prisma.share.findUnique({
+      where: { link },
+      include: { folder: { include: { files: true } } },
+    });
+    if (!share) return res.redirect(req.get("Referrer") || "/home");
+
+    return res.render("folder", {
+      folder: share.folder,
+      shared: true,
+    });
+  },
+];
 
 // CRUD
 
@@ -235,5 +268,23 @@ exports.deleteFolder = [
     });
 
     res.redirect(req.get("Referrer") || "/home");
+  },
+];
+
+// share links
+
+exports.createShareLink = [
+  async (req, res) => {
+    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    const { id, duration } = req.body;
+    const durationMS = Number(duration) * 24 * 60 * 60 * 1000; // days, hours, min, sec, ms
+    const expiresAt = new Date(Date.now().valueOf() + durationMS);
+    const link = crypto.randomUUID();
+    console.table({ id, expires: expiresAt.toString(), link });
+    await prisma.share.create({
+      data: { link, expiresAt, folder: { connect: { id: Number(id) } } },
+    });
+
+    res.redirect(`/folder/${id}`);
   },
 ];

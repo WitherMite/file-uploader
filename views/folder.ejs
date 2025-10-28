@@ -13,9 +13,14 @@
         <div>
           <a href="/home"><button>Home</button></a>
         </div>
-        <%- include("edit-folder-form", { folder, dialogId: `editFormDialog`,
-        looseFiles });%>
+        <!-- prettier-ignore -->
+        <% if (!locals.shared) { %>
+        <%- include("edit-folder-form", { folder, dialogId: `editFormDialog`, looseFiles });%>
+        <a href="/share?id=<%= folder.id%>"><button>Share Folder</button></a>
+        <% } %>
       </nav>
+
+      <% if (!locals.shared) { %>
       <form
         action="/upload"
         method="post"
@@ -34,11 +39,23 @@
         </div>
         <button type="submit">Upload</button>
       </form>
+      <% } %>
     </header>
-    <main class="file-container">
+    <main>
       <!-- prettier-ignore -->
-
-      <%- include("list-files", { files: folder.files }); %>
+      <% if (folder.shares) { %>
+      <ul class="share-links">
+        <% folder.shares.forEach((share) => { %>
+        <li>
+          <p><code><%= url %>/share/<%= share.link %></code></p>
+          <p>Expires: <%= share.expiresAt %></p>
+        </li>
+        <% }) %>
+      </ul>
+      <% } %>
+      <div class="file-container">
+        <%- include("list-files", { files: folder.files }); %>
+      </div>
     </main>
   </body>
 </html>

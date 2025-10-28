@@ -35,6 +35,7 @@ model folder {
     userId Int
     files file[]
     name String @unique
+    shares share[]
 }
 
 model file {
@@ -50,4 +51,12 @@ model file {
     mimetype String
     extension String
     createdAt DateTime @default(now())
+}
+
+model share {
+    id Int @id @default(autoincrement())
+    folder folder @relation(fields: [folderId], references: [id])
+    folderId Int
+    link String @unique
+    expiresAt DateTime
 }
