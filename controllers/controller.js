@@ -47,7 +47,7 @@ exports.renderFolder = async (req, res, next) => {
   if (!req.isAuthenticated()) return res.redirect("/");
   try {
     const folder = await prisma.folder.findUnique({
-      where: { id: Number(req.params.folderId) },
+      where: { id: Number(req.params.folderId), user: { id: req.user.id } },
       include: { files: true, shares: true },
     });
 
@@ -182,7 +182,7 @@ exports.updateFile = [
     }
 
     await prisma.file.update({
-      where: { id: Number(id) },
+      where: { id: Number(id), user: { id: req.user.id } },
       data: updateData,
     });
     res.redirect(req.get("Referrer") || "/home");
@@ -193,7 +193,9 @@ exports.deleteFile = [
   async (req, res, next) => {
     if (!req.isAuthenticated()) return res.status(400).redirect("/");
     const id = Number(req.params.id);
-    const file = await prisma.file.findUnique({ where: { id: id } });
+    const file = await prisma.file.findUnique({
+      where: { id: id, user: { id: req.user.id } },
+    });
 
     fs.unlink(`./public${file.path}`, async (e) => {
       if (e) {
@@ -249,7 +251,7 @@ exports.updateFolder = [
     }
 
     await prisma.folder.update({
-      where: { id: Number(id) },
+      where: { id: Number(id), user: { id: req.user.id } },
       data: updateData,
     });
     res.redirect(req.get("Referrer") || "/home");
@@ -264,6 +266,7 @@ exports.deleteFolder = [
     await prisma.folder.delete({
       where: {
         id,
+        user: { id: req.user.id },
       },
     });
 
