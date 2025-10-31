@@ -38,7 +38,7 @@ exports.renderLoginForm = async (req, res) => {
 };
 
 exports.renderHomepage = async (req, res) => {
-  if (!req.isAuthenticated()) return res.redirect("/");
+  if (!req.isAuthenticated()) return res.status(401).redirect("/");
   const { username, folders, files } = req.user;
   return res.render("home", { username, folders, files });
 };
@@ -51,14 +51,14 @@ const checkShareLinkActive = async (share) => {
 };
 
 exports.renderFolder = async (req, res, next) => {
-  if (!req.isAuthenticated()) return res.redirect("/");
+  if (!req.isAuthenticated()) return res.status(401).redirect("/");
   try {
     const folder = await prisma.folder.findUnique({
       where: { id: Number(req.params.folderId), user: { id: req.user.id } },
       include: { files: true, shares: true },
     });
 
-    if (!folder) return res.redirect("/home");
+    if (!folder) return res.status(404).redirect("/home");
 
     const activeShareLinks = [];
     for (let i = 0; i < folder.shares.length; i++) {
@@ -80,13 +80,15 @@ exports.renderFolder = async (req, res, next) => {
 };
 
 exports.renderShareForm = async (req, res, next) => {
-  if (!req.isAuthenticated()) return res.redirect("/");
+  if (!req.isAuthenticated()) return res.status(401).redirect("/");
   try {
     const folder = await prisma.folder.findUnique({
       where: { id: Number(req.query.id), user: { id: req.user.id } },
     });
 
-    if (!folder) return res.redirect(req.get("Referrer") || "/home");
+    if (!folder) {
+      return res.status(404).redirect(req.get("Referrer") || "/home");
+    }
     return res.render("share-folder-form", { folder });
   } catch (e) {
     console.error(e);
@@ -161,7 +163,7 @@ const checkPOSTValidation = async (req, res, next) => {
 exports.uploadFile = [
   async (req, res, next) => {
     if (req.isAuthenticated()) return next();
-    return res.status(400).redirect("/");
+    return res.status(401).redirect("/");
   },
   validators.validateFile,
   checkPOSTValidation,
@@ -191,7 +193,7 @@ exports.updateFile = [
   validators.validateFileUpdate,
   checkPOSTValidation,
   async (req, res, next) => {
-    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    if (!req.isAuthenticated()) return res.status(401).redirect("/");
     const { id, name, folderId } = req.body;
 
     const updateData = { folder: {} };
@@ -213,7 +215,7 @@ exports.updateFile = [
 
 exports.deleteFile = [
   async (req, res, next) => {
-    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    if (!req.isAuthenticated()) return res.status(401).redirect("/");
     const id = Number(req.params.id);
     const file = await prisma.file.findUnique({
       where: { id: id, user: { id: req.user.id } },
@@ -240,7 +242,7 @@ exports.createFolder = [
   validators.validateFolder,
   checkPOSTValidation,
   async (req, res, next) => {
-    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    if (!req.isAuthenticated()) return res.status(401).redirect("/");
     const { name } = req.body;
     await prisma.folder.create({
       data: { name, user: { connect: { id: req.user.id } } },
@@ -253,7 +255,7 @@ exports.updateFolder = [
   validators.validateFolderUpdate,
   checkPOSTValidation,
   async (req, res, next) => {
-    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    if (!req.isAuthenticated()) return res.status(401).redirect("/");
     const { name, id, addFileIds, removeFileIds } = req.body;
 
     const updateData = { files: {} };
@@ -282,7 +284,7 @@ exports.updateFolder = [
 
 exports.deleteFolder = [
   async (req, res) => {
-    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    if (!req.isAuthenticated()) return res.status(401).redirect("/");
     const id = Number(req.params.id);
 
     await prisma.folder.delete({
@@ -300,7 +302,7 @@ exports.deleteFolder = [
 
 exports.createShareLink = [
   async (req, res) => {
-    if (!req.isAuthenticated()) return res.status(400).redirect("/");
+    if (!req.isAuthenticated()) return res.status(401).redirect("/");
     const { id, duration } = req.body;
     const durationMS = Number(duration) * 24 * 60 * 60 * 1000; // days, hours, min, sec, ms
     const expiresAt = new Date(Date.now().valueOf() + durationMS);
