@@ -43,6 +43,13 @@ exports.renderHomepage = async (req, res) => {
   return res.render("home", { username, folders, files });
 };
 
+const checkShareLinkActive = async (share) => {
+  if (share.expiresAt < Date.now().valueOf()) {
+    await prisma.share.delete({ where: { id: share.id } });
+    return false;
+  } else return true;
+};
+
 exports.renderFolder = async (req, res, next) => {
   if (!req.isAuthenticated()) return res.redirect("/");
   try {
@@ -52,6 +59,14 @@ exports.renderFolder = async (req, res, next) => {
     });
 
     if (!folder) return res.redirect("/home");
+
+    const activeShareLinks = [];
+    for (let i = 0; i < folder.shares.length; i++) {
+      if (await checkShareLinkActive(folder.shares[i]))
+        activeShareLinks.push(folder.shares[i]);
+    }
+    folder.shares = activeShareLinks;
+
     return res.render("folder", {
       folder,
       looseFiles: req.user.files,
@@ -79,21 +94,28 @@ exports.renderShareForm = async (req, res, next) => {
   }
 };
 
-exports.renderShareLink = [
-  async (req, res) => {
-    const link = req.params.link;
-    const share = await prisma.share.findUnique({
-      where: { link },
-      include: { folder: { include: { files: true } } },
-    });
-    if (!share) return res.redirect(req.get("Referrer") || "/home");
+exports.renderShareLink = async (req, res) => {
+  const link = req.params.link;
+  const share = await prisma.share.findUnique({
+    where: { link },
+    include: { folder: { include: { files: true } } },
+  });
 
-    return res.render("folder", {
-      folder: share.folder,
-      shared: true,
-    });
-  },
-];
+  if (!share) {
+    const message = "Share link ";
+    return res.status(404).render("index", { message });
+  }
+
+  if (!(await checkShareLinkActive(share))) {
+    const message = "Share link expired";
+    return res.status(404).render("index", { message });
+  }
+
+  return res.render("folder", {
+    folder: share.folder,
+    shared: true,
+  });
+};
 
 // CRUD
 
