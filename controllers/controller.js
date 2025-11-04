@@ -1,5 +1,5 @@
 const { validationResult } = require("express-validator");
-const fs = require("node:fs");
+const { supabase } = require("../config/storage");
 const passportStrategy = require("../config/passportStrategy");
 const validators = require("./validators");
 const prisma = require("../config/db");
@@ -180,7 +180,7 @@ exports.uploadFile = [
         size,
         mimetype,
         extension,
-        path: path.substring(6), // removes public/ from path since express starts there for static assets
+        path,
         user: { connect: { id: req.user.id } },
         folder,
       },
@@ -221,18 +221,21 @@ exports.deleteFile = [
       where: { id: id, user: { id: req.user.id } },
     });
 
-    fs.unlink(`./public${file.path}`, async (e) => {
-      if (e) {
-        console.error(e);
-        next(e);
-      }
+    const { error } = await supabase.storage
+      .from("Files")
+      .remove([file.filename]);
+
+    if (error) {
+      console.error(error);
+      return next(error);
+    } else {
       await prisma.file.delete({
         where: {
           id,
         },
       });
-      res.redirect(req.get("Referrer") || "/home");
-    });
+    }
+    res.redirect(req.get("Referrer") || "/home");
   },
 ];
 
